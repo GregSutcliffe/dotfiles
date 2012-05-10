@@ -1,0 +1,27 @@
+[include]
+# Set personal options in this file
+  path           = .gitconfig.email
+[user]
+	name           = Greg Sutcliffe
+[github]
+	user           = GregSutcliffe
+[core]
+	editor         = vim
+[color]
+	ui             = auto
+[push]
+	default        = tracking
+[branch]
+	autosetupmerge = true
+[web]
+	browser        = chromium
+[alias]
+  st  = status
+  ci  = commit
+  br  = branch
+  co  = checkout
+  df  = diff
+  lg  = log -p
+  sco = "!f() { git read-tree --prefix = $2 -u $1; }; f"
+  sme = "!f() { git merge --squash -s subtree --no-commit $1; }; f"
+  sdf = "!f() { git diff-tree -p $1; }; f"
