@@ -2,6 +2,9 @@ import XMonad
 import qualified XMonad.StackSet as W
 import XMonad.Hooks.DynamicLog
 import XMonad.Hooks.ManageDocks
+import XMonad.Layout.Tabbed
+import XMonad.Layout.Fullscreen
+import XMonad.Layout.NoBorders
 import XMonad.Util.Run(spawnPipe)
 import XMonad.Util.EZConfig
 import XMonad.Config.Desktop
@@ -10,9 +13,9 @@ import System.IO
 
 myWorkspaces = map show [1..22]
 myMod        = mod4Mask
-myTerminal   = "Terminal"
+myTerminal   = "urxvt"
 
--- one line down    xmproc <- spawnPipe "/usr/bin/xmobar /home/gsutcliffe/.xmobarrc"
+-- one line down    xmproc <- spawnPipe "/usr/bin/xmobar /home/greg/.xmobarrc"
 main = xmonad =<< statusBar myBar myPP toggleStrutsKey myConfig
 
 -- Command to launch the bar.
@@ -24,11 +27,23 @@ myPP = xmobarPP { ppCurrent = xmobarColor "#429942" "" . wrap "<" ">" }
 -- Key binding to toggle the gap for the bar.
 toggleStrutsKey XConfig {XMonad.modMask = modMask} = (modMask, xK_b)
 
+-- Layouthook
+myLayoutHook = avoidStruts ( simpleTabbed ||| tiled ||| Mirror tiled ) ||| noBorders (fullscreenFull Full)
+  where
+    -- default tiling algorithm partitions the screen into two panes
+    tiled   = Tall nmaster delta ratio
+    -- The default number of windows in the master pane
+    nmaster = 1
+    -- Default proportion of screen occupied by master pane
+    ratio   = 2/3
+    -- Percent of screen to increment by when resizing panes
+    delta   = 3/100
+
 -- Main configuration, override the defaults to your liking.
 myConfig = desktopConfig
         { manageHook = manageDocks <+> manageHook defaultConfig
-        , layoutHook = avoidStruts  $  layoutHook defaultConfig
-        , handleEventHook = fullscreenEventHook
+        , layoutHook = myLayoutHook
+        , handleEventHook = XMonad.Layout.Fullscreen.fullscreenEventHook
         , workspaces = myWorkspaces
         , terminal           = myTerminal
         , borderWidth        = 2
@@ -70,10 +85,13 @@ myConfig = desktopConfig
         `additionalKeysP` myKeysP
 
 myKeysP =   [ ("<XF86Calculator>", spawn "xlock -mode matrix")
-            ,  ("<XF86Explorer>", spawn "thunar")
-            ,  ("<XF86Tools>", spawn "setxkbmap gb") ]
+            , ("<XF86Explorer>", spawn "thunar")
+            , ("<XF86Tools>", spawn "setxkbmap gb")
+            , ("M-p", spawn "dmenu_run -b") ]
             ++
             [ (mask ++ "M-" ++ [key], screenWorkspace scr >>= flip whenJust (windows . action))
                  | (key, scr)  <- zip "wer" [1,0,2] -- was [0..] *** change to match your screen order ***
                  , (action, mask) <- [ (W.view, "") , (W.shift, "S-")]
             ]
+
+-- vim: ft=haskell

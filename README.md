@@ -17,6 +17,6 @@ To-do
 =====
 
 * Bashrc
-* Awesome config / themes / plugins
+* More XMonad stuff
 
 Stand-alone puppet config module for this + vim? Might be worthwile...
