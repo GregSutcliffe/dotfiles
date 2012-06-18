@@ -87,6 +87,12 @@ myConfig = desktopConfig
 myKeysP =   [ ("<XF86Calculator>", spawn "xlock -mode matrix")
             , ("<XF86Explorer>", spawn "thunar")
             , ("<XF86Tools>", spawn "setxkbmap gb")
+            , ("<XF86AudioLowerVolume>", spawn "amixer -q sset Master 5%-")
+            , ("<XF86AudioRaiseVolume>", spawn "amixer -q sset Master 5%+")
+            , ("<XF86AudioMute>", spawn "amixer -q sset Master toggle")
+            , ("<XF86AudioPlay>", spawn "mpc toggle")
+            , ("<XF86AudioPrev>", spawn "mpc prev")
+            , ("<XF86AudioNext>", spawn "mpc next")
             , ("M-p", spawn "dmenu_run -b") ]
             ++
             [ (mask ++ "M-" ++ [key], screenWorkspace scr >>= flip whenJust (windows . action))
