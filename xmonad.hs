@@ -34,11 +34,11 @@ myPP = xmobarPP { ppCurrent = xmobarColor "#429942" "" . wrap "<" ">" }
 toggleStrutsKey XConfig {XMonad.modMask = modMask} = (modMask, xK_b)
 
 -- Layouthook
-myLayoutHook = avoidStruts (   tiled
+myLayoutHook = avoidStruts $ smartBorders ( tiled
                            ||| Mirror tiled
                            ||| simpleTabbed
-                           ||| Grid )
-                           ||| noBorders (fullscreenFull Full)
+                           ||| Grid 
+                           ||| fullscreenFull Full)
   where
     -- default tiling algorithm partitions the screen into two panes
     tiled   = Tall nmaster delta ratio
