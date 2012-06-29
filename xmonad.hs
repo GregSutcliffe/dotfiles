@@ -13,7 +13,7 @@ import System.IO
 
 myWorkspaces = map show [1..22]
 myMod        = mod4Mask
-myTerminal   = "urxvt"
+myTerminal   = "Terminal"
 
 -- one line down    xmproc <- spawnPipe "/usr/bin/xmobar /home/greg/.xmobarrc"
 main = xmonad =<< statusBar myBar myPP toggleStrutsKey myConfig
