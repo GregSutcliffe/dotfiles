@@ -1,15 +1,21 @@
 import XMonad
 import qualified XMonad.StackSet as W
+import Data.Ratio ((%))
+import System.IO
+import XMonad.Config.Desktop
 import XMonad.Hooks.DynamicLog
+import XMonad.Hooks.EwmhDesktops
 import XMonad.Hooks.ManageDocks
-import XMonad.Layout.Tabbed
+import XMonad.Hooks.ManageHelpers
+import XMonad.Layout.Grid
 import XMonad.Layout.Fullscreen
 import XMonad.Layout.NoBorders
-import XMonad.Util.Run(spawnPipe)
+import XMonad.Layout.Tabbed
+import XMonad.Prompt
+import XMonad.Prompt.AppendFile
+import XMonad.Prompt.Window
 import XMonad.Util.EZConfig
-import XMonad.Config.Desktop
-import XMonad.Hooks.EwmhDesktops
-import System.IO
+import XMonad.Util.Run(spawnPipe)
 
 myWorkspaces = map show [1..22]
 myMod        = mod4Mask
@@ -28,7 +34,11 @@ myPP = xmobarPP { ppCurrent = xmobarColor "#429942" "" . wrap "<" ">" }
 toggleStrutsKey XConfig {XMonad.modMask = modMask} = (modMask, xK_b)
 
 -- Layouthook
-myLayoutHook = avoidStruts ( simpleTabbed ||| tiled ||| Mirror tiled ) ||| noBorders (fullscreenFull Full)
+myLayoutHook = avoidStruts (   tiled
+                           ||| Mirror tiled
+                           ||| simpleTabbed
+                           ||| Grid )
+                           ||| noBorders (fullscreenFull Full)
   where
     -- default tiling algorithm partitions the screen into two panes
     tiled   = Tall nmaster delta ratio
@@ -39,9 +49,36 @@ myLayoutHook = avoidStruts ( simpleTabbed ||| tiled ||| Mirror tiled ) ||| noBor
     -- Percent of screen to increment by when resizing panes
     delta   = 3/100
 
+-- Manage hook
+myManageHook :: ManageHook
+myManageHook = manageDocks <+> (composeAll . concat $
+    [ [resource     =? r     --> doIgnore                      |   r   <- myIgnores]
+--    , [className    =? c     --> doShift (myWorkspaces !! 1)   |   c   <- myWebS   ]
+--    , [className    =? c     --> doShift (myWorkspaces !! 4)   |   c   <- myChatS  ]
+--    , [className    =? c     --> doShift (myWorkspaces !! 3)   |   c   <- myGfxS   ]
+--    , [className    =? c     --> doShift (myWorkspaces !! 5)   |   c   <- myMusicS ]
+--    , [className    =? c     --> doFloat                       |   c   <- myFloatFC]
+--    , [className    =? c     --> doCenterFloat                 |   c   <- myFloatCC]
+--    , [name         =? n     --> doSideFloat NW                |   n   <- myFloatSN]
+    , [name         =? n     --> doF W.focusDown               |   n   <- myFocusDC]
+    , [composeOne   [ isFullscreen -?> doFullFloat ]]
+    ])
+    where
+        role      = stringProperty "WM_WINDOW_ROLE"
+        name      = stringProperty "WM_NAME"
+        myIgnores = ["desktop","desktop_window"]
+--        myWebS    = ["Chromium","Firefox"]
+--        myGfxS    = ["gimp-2.6", "Gimp-2.6", "Gimp", "gimp", "GIMP"]
+--        myChatS   = ["Pidgin", "Xchat"]
+--        myMusicS  = ["Clementine"]
+--        myFloatFC = ["Oblogout"]
+--        myFloatCC = ["File-roller", "zsnes", "Gcalctool"]
+--        myFloatSN = ["Event Tester"]
+        myFocusDC = ["xfce4-notifyd"]
+
 -- Main configuration, override the defaults to your liking.
 myConfig = desktopConfig
-        { manageHook = manageDocks <+> manageHook defaultConfig
+        { manageHook = myManageHook
         , layoutHook = myLayoutHook
         , handleEventHook = XMonad.Layout.Fullscreen.fullscreenEventHook
         , workspaces = myWorkspaces
@@ -84,16 +121,25 @@ myConfig = desktopConfig
         ]
         `additionalKeysP` myKeysP
 
-myKeysP =   [ ("<XF86Calculator>", spawn "xlock -mode matrix")
+myKeysP =   [ ("C-M-n", do
+                spawn ("date>>"++"/home/gsutcliffe/NOTES")
+                appendFilePrompt defaultXPConfig "/home/gsutcliffe/NOTES")
+            , ("S-M-g", windowPromptGoto defaultXPConfig { autoComplete = Just 500000 } )
+            , ("S-M-b", windowPromptBring defaultXPConfig )
+            , ("M-p", spawn "dmenu_run -b")
+            -- Work Keyboard
+            , ("<XF86Calculator>", spawn "xlock -mode matrix") -- Work keyboard
             , ("<XF86Explorer>", spawn "thunar")
             , ("<XF86Tools>", spawn "setxkbmap gb")
+            -- Laptop
+            , ("M-<KP_Enter>", spawn "xscreensaver-command -lock") -- Laptop
             , ("<XF86AudioLowerVolume>", spawn "amixer -q sset Master 5%-")
             , ("<XF86AudioRaiseVolume>", spawn "amixer -q sset Master 5%+")
             , ("<XF86AudioMute>", spawn "amixer -q sset Master toggle")
             , ("<XF86AudioPlay>", spawn "mpc toggle")
             , ("<XF86AudioPrev>", spawn "mpc prev")
             , ("<XF86AudioNext>", spawn "mpc next")
-            , ("M-p", spawn "dmenu_run -b") ]
+            ]
             ++
             [ (mask ++ "M-" ++ [key], screenWorkspace scr >>= flip whenJust (windows . action))
                  | (key, scr)  <- zip "wer" [1,0,2] -- was [0..] *** change to match your screen order ***
