@@ -37,11 +37,12 @@ fi
 
 # compositing
 xcompmgr -c -t-5 -l-5 -r4.2 -o.55 &
+conky -d; sleep 1 && transset-df .5
 
 # exec gnome-session
 # exec startkde
 # exec ck-launch-session startxfce4
-# ...or the Window Manager of your choice 
+# ...or the Window Manager of your choice
 
 DEFAULT_SESSION=xmonad
 case $1 in
