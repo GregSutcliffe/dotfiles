@@ -12,7 +12,7 @@ import XMonad.Layout.Fullscreen
 import XMonad.Layout.NoBorders
 import XMonad.Layout.Tabbed
 import XMonad.Prompt
-import XMonad.Prompt.AppendFile
+import XMonad.Prompt.AppLauncher as AL
 import XMonad.Prompt.Window
 import XMonad.Util.EZConfig
 import XMonad.Util.Run(spawnPipe)
@@ -71,7 +71,7 @@ myManageHook = manageDocks <+> (composeAll . concat $
 --        myGfxS    = ["gimp-2.6", "Gimp-2.6", "Gimp", "gimp", "GIMP"]
 --        myChatS   = ["Pidgin", "Xchat"]
 --        myMusicS  = ["Clementine"]
---        myFloatFC = ["Oblogout"]
+--        myFloatFC = ["Steam"]
 --        myFloatCC = ["File-roller", "zsnes", "Gcalctool"]
 --        myFloatSN = ["Event Tester"]
         myFocusDC = ["xfce4-notifyd"]
@@ -121,9 +121,7 @@ myConfig = desktopConfig
         ]
         `additionalKeysP` myKeysP
 
-myKeysP =   [ ("C-M-n", do
-                spawn ("date>>"++"/home/gsutcliffe/NOTES")
-                appendFilePrompt defaultXPConfig "/home/gsutcliffe/NOTES")
+myKeysP =   [ ("C-M-n", AL.launchApp defaultXPConfig "/home/greg/bin/trello-wrapper.sh " )
             , ("S-M-g", windowPromptGoto defaultXPConfig { autoComplete = Just 500000 } )
             , ("S-M-b", windowPromptBring defaultXPConfig )
             , ("M-p", spawn "dmenu_run -b")

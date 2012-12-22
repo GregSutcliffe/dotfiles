@@ -25,3 +25,8 @@
   sco = "!f() { git read-tree --prefix = $2 -u $1; }; f"
   sme = "!f() { git merge --squash -s subtree --no-commit $1; }; f"
   sdf = "!f() { git diff-tree -p $1; }; f"
+
+[url "git@github.com:"]
+  pushInsteadOf = git://github.com/
+[url "git@github.com:"]
+  pushInsteadOf = https://github.com/
