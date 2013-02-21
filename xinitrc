@@ -37,7 +37,7 @@ fi
 
 # compositing
 xcompmgr -c -t-5 -l-5 -r4.2 -o.55 &
-conky -d; sleep 1 && transset-df .5
+conky -d; sleep 1 # && transset-df .5 -a
 
 # exec gnome-session
 # exec startkde
@@ -47,5 +47,6 @@ conky -d; sleep 1 && transset-df .5
 DEFAULT_SESSION=xmonad
 case $1 in
   xmonad) exec $1 ;;
+  i3) exec $1 ;;
   *) exec $DEFAULT_SESSION ;;
 esac

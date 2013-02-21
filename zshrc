@@ -34,4 +34,9 @@ plugins=(archlinux git)
 source $ZSH/oh-my-zsh.sh
 
 # Customize to your needs...
+
+# correction is annoying
+unsetopt correct_all
+
+# Set transparency
 [ -n "$TERM" ] && transset-df -a >/dev/null
