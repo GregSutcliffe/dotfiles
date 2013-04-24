@@ -7,12 +7,15 @@ import XMonad.Hooks.DynamicLog
 import XMonad.Hooks.EwmhDesktops
 import XMonad.Hooks.ManageDocks
 import XMonad.Hooks.ManageHelpers
+import XMonad.Hooks.SetWMName
+import XMonad.Hooks.ICCCMFocus
 import XMonad.Layout.Grid
 import XMonad.Layout.Fullscreen
 import XMonad.Layout.NoBorders
 import XMonad.Layout.Tabbed
 import XMonad.Prompt
 import XMonad.Prompt.AppendFile
+import XMonad.Prompt.AppLauncher as AL
 import XMonad.Prompt.Window
 import XMonad.Util.EZConfig
 import XMonad.Util.Run(spawnPipe)
@@ -37,7 +40,7 @@ toggleStrutsKey XConfig {XMonad.modMask = modMask} = (modMask, xK_b)
 myLayoutHook = avoidStruts $ smartBorders ( tiled
                            ||| Mirror tiled
                            ||| simpleTabbed
-                           ||| Grid 
+                           ||| Grid
                            ||| fullscreenFull Full)
   where
     -- default tiling algorithm partitions the screen into two panes
@@ -59,8 +62,9 @@ myManageHook = manageDocks <+> (composeAll . concat $
 --    , [className    =? c     --> doShift (myWorkspaces !! 5)   |   c   <- myMusicS ]
 --    , [className    =? c     --> doFloat                       |   c   <- myFloatFC]
 --    , [className    =? c     --> doCenterFloat                 |   c   <- myFloatCC]
---    , [name         =? n     --> doSideFloat NW                |   n   <- myFloatSN]
+    , [name         =? n     --> doSideFloat NW                |   n   <- myFloatSN]
     , [name         =? n     --> doF W.focusDown               |   n   <- myFocusDC]
+    , [role =? "pop-up" --> doSideFloat CE ]
     , [composeOne   [ isFullscreen -?> doFullFloat ]]
     ])
     where
@@ -71,9 +75,9 @@ myManageHook = manageDocks <+> (composeAll . concat $
 --        myGfxS    = ["gimp-2.6", "Gimp-2.6", "Gimp", "gimp", "GIMP"]
 --        myChatS   = ["Pidgin", "Xchat"]
 --        myMusicS  = ["Clementine"]
---        myFloatFC = ["Oblogout"]
+--        myFloatFC = ["crx_eggkanocgddhmamlbiijnphhppkpkmkl"]
 --        myFloatCC = ["File-roller", "zsnes", "Gcalctool"]
---        myFloatSN = ["Event Tester"]
+        myFloatSN = ["Event Tester"]
         myFocusDC = ["xfce4-notifyd"]
 
 -- Main configuration, override the defaults to your liking.
@@ -87,6 +91,8 @@ myConfig = desktopConfig
         , normalBorderColor  = "#cccccc"
         , focusedBorderColor = "#cd8b00"
         , modMask = myMod     -- Rebind Mod to the Windows key
+        , startupHook = setWMName "LG3D" -- StartupHook for RubyMine
+        , logHook = takeTopFocus -- LogHook for RubyMine
         }
         `additionalKeys` [
             ((myMod .|. controlMask, xK_Return), spawn myTerminal),
@@ -121,9 +127,8 @@ myConfig = desktopConfig
         ]
         `additionalKeysP` myKeysP
 
-myKeysP =   [ ("C-M-n", do
-                spawn ("date>>"++"/home/gsutcliffe/NOTES")
-                appendFilePrompt defaultXPConfig "/home/gsutcliffe/NOTES")
+-- myKeysP =   [ ("C-M-n", AL.launchApp defaultXPConfig "/home/greg/bin/tracks_cli_client.rb -p4 -c2 " )
+myKeysP =   [ ("C-M-n", AL.launchApp defaultXPConfig "/home/greg/bin/trello-wrapper.sh " )
             , ("S-M-g", windowPromptGoto defaultXPConfig { autoComplete = Just 500000 } )
             , ("S-M-b", windowPromptBring defaultXPConfig )
             , ("M-p", spawn "dmenu_run -b")
