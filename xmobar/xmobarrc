@@ -1,22 +1,17 @@
 Config { font = "xft:Bitstream Vera Sans Mono:size=8:antialias=true"
   , bgColor = "black"
-    , fgColor = "grey"
-    , position = TopW L 90
-    , commands = [ Run Com "/usr/bin/mpc" ["current"] "mpd" 17
-    , Run MultiCpu ["-t","CPU <total>%", "-L", "40", "-H", "60", "-l", "lightblue", "-n", "white", "-h", "red"] 17
+  , fgColor = "grey"
+  , position = TopW L 90
+  , commands = [ Run MultiCpu ["-t","CPU <total>%", "-L", "40", "-H", "60", "-l", "lightblue", "-n", "white", "-h", "red"] 17
     , Run Memory ["-t","Mem: <usedratio>%"] 23
     , Run Swap [] 29
     , Run Wireless "wlan0" ["-t","<essid> (<quality>)","-L","0","-H","32","--normal","green","--high","red"] 110
     , Run BatteryP ["BAT0"] ["-t","<timeleft> (<left>%)","-L","25","-H","75","--low","#FF0000","--normal","#F9FF00","-p","3","--high","#00FF00"] 611
     , Run Com "/home/greg/dotfiles/xmobar/getvolume.sh" [] "myVolume" 11
-    , Run Com "/home/greg/dotfiles/xmobar/yaourt.sh" [] "myUpdates" 36000
     , Run Date "%a %b %_d %I:%M %p" "date" 31
     , Run StdinReader
-    ]
-    , sepChar = "%"
-    , alignSep = "}{"
-    , template = "%StdinReader% }{ %multicpu% %memory% %swap% | %wlan0wi% | %battery% | %myVolume% | Updates: %myUpdates% | %mpd% | %date%"
+  ]
+  , sepChar = "%"
+  , alignSep = "}{"
+  , template = "%StdinReader% }{ %multicpu% %memory% %swap% | %wlan0wi% | %battery% | %myVolume% | %date%"
 }
-
-
-
