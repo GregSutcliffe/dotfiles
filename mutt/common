@@ -100,8 +100,13 @@ bind attach <return> view-mailcap
 # Mark all as read, good for lists
 macro index .c "T.*\n;WN^T.*\n" "Mark All Read"
 
-# Auto archive mail from Lists older than 1 month
-folder-hook Lists.* 'push <tag-pattern>~r>2m!~F<enter>'
+# Jump to Inbox
+macro index,pager I "<change-folder>=redhat/INBOX<enter>"
+
+# Auto archive mail from Lists older than 2 months
+folder-hook Lists.* 'push "<tag-pattern> ~d >2m\n<tag-prefix-cond><save-message>=redhat/Archives\n\n'
+# Macro to do it manually for other folders
+macro index .C "T~d>2m\n;s=redhat/Archives\n\n"
 
 # lame attempt at coloring inline patch diffs
 color body green default "^diff \-.*"
