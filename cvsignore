@@ -1,3 +1,6 @@
 # Use this for gitignore becuse tools like rsync use it too
 tags
 tags-ja
+discovery*
+public/discovery*
+public/custom*

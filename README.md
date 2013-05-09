@@ -16,7 +16,7 @@ I need to remember to copy these from backup/working system
 To-do
 =====
 
-* Bashrc
+* Zshrc
 * More XMonad stuff
 
 Stand-alone puppet config module for this + vim? Might be worthwile...
