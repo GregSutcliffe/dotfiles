@@ -1,0 +1,15 @@
+# save copies of sent emails to the ${folder}Sent directory
+# the '+' expands to $folders (like '~' to $HOME in the bash shell)
+set record = +redhat/Sent
+set postponed = +redhat/Drafts
+
+# use msmtp to send outgoing mail to the mailserver
+# see ~/.msmtp for configuration
+set sendmail="/usr/bin/msmtp -a redhat"
+
+set from="gsutclif@redhat.com"
+
+# bcc myself to make gmail style threaded conversations
+my_hdr bcc: gsutclif@redhat.com
+
+# vim: set ft=muttrc

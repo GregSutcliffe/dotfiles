@@ -1,0 +1,113 @@
+#------------------------------------------------------#
+# ~/dotfiles/mutt/common
+
+set check_new = yes
+set beep_new = yes
+set realname = "Greg Sutcliffe"
+set mail_check = 60             # Check for new mail in all mailboxes
+                                # every minute
+set timeout = 3
+set use_from = yes               # Required for msmtp to know which account to use
+                                 # for emails
+set uncollapse_jump
+set delete
+
+# defaults for how to open attachments
+set mailcap_path = ~/dotfiles/mutt/mailcap
+auto_view text/html
+
+set sort = 'threads'
+set sort_aux = 'reverse-last-date-received'
+#set imap_check_subscribed = yes
+
+#set header_cache=~/dotfiles/mutt/cache/headers
+#set message_cachedir=~/dotfiles/mutt/cache/bodies
+#set certificate_file=~/dotfiles/mutt/certificates
+
+set move=no                        # Don't move mail from the spool.
+#======================================================#
+# which editor do you want to use?
+# vim of course!
+set editor="vim -f -c 'set tw=70 et' -c 'set spell' '+/^$' -c 'set nocin'"
+set edit_headers          # See the headers when editing
+
+#======================================================#
+# Order of headers and what to show
+hdr_order Date: From: User-Agent: X-Mailer \
+          To: Cc: Reply-To: Subject:
+ignore *
+unignore Date: From: User-Agent: X-Mailer: X-PGP-Key:  \
+          To: Cc: Reply-To: Subject:
+
+#======================================================#
+# Odds and Ends
+set sort_alias=alias     # sort aliases in alpha order by alias name
+#set markers          # mark wrapped lines of text in the pager with a +
+set smart_wrap       # Don't wrap mid-word
+set status_on_top    # Status bar on top.
+push <show-version>  # Shows mutt version at startup
+set mark_old=no
+
+# Status Bar -----------------------------------------
+set status_chars  = " *%A"
+set status_format = "───[ Folder: %f ]───[%r%m messages%?n? (%n new)?%?d? (%d to delete)?%?t? (%t tagged)? ]───%>─%?p?( %p postponed )?───"
+
+# sidebar items
+set sidebar_width = 40
+set sidebar_visible = yes
+set sidebar_sort = yes
+set sidebar_delim   = ' │'
+
+# Sidebar Navigation ---------------------------------
+bind index,pager <C-Down>   sidebar-next
+bind index,pager <C-Up>     sidebar-prev
+bind index,pager <C-Right>  sidebar-open
+
+#color sidebar_new yellow default
+color sidebar_new color221 color233
+macro index b "<enter-command>toggle sidebar_visible<enter>"
+macro pager b "<enter-command>toggle sidebar_visible<enter>"
+bind index B bounce-message
+
+# Index Key Bindings ---------------------------------
+bind index gg       first-entry
+bind index G        last-entry
+bind index R        group-reply
+bind pager,index M        save-message
+bind pager,index c        mail
+bind pager,index  half-down
+bind pager,index  half-up
+
+# Pager View Options ---------------------------------
+unset markers              # no ugly plus signs
+set pager_context=6        # Retain 6 lines of previous page when scrolling.
+set tilde
+set pager_stop
+set menu_scroll=yes
+set pager_index_lines = 10 # number of index lines to show
+
+# Pager Key Bindings ---------------------------------
+bind pager k  previous-line
+bind pager j  next-line
+bind pager gg top
+bind pager G  bottom
+
+bind pager R  group-reply
+
+# View attachments properly.
+bind attach <return> view-mailcap
+
+# Mark all as read, good for lists
+macro index .c "T.*\n;WN^T.*\n" "Mark All Read"
+
+# Auto archive mail from Lists older than 1 month
+folder-hook Lists.* 'push <tag-pattern>~r>2m!~F<enter>'
+
+# lame attempt at coloring inline patch diffs
+color body green default "^diff \-.*"
+color body green default "^index [a-f0-9].*"
+color body green default "^\-\-\- .*"
+color body green default "^[\+]{3} .*"
+color body cyan default "^[\+][^\+]+.*"
+color body red  default "^\-[^\-]+.*"
+color body brightblue default "^@@ .*"

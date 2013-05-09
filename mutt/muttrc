@@ -1,0 +1,22 @@
+# Config based on https://github.com/jasongraham/mail_conf_example
+
+set folder = ~/maildata/mail
+
+#source ~/dotfiles/mutt/muttmailboxes
+mailboxes `echo ~/maildata/mail/redhat/*`
+set spoolfile = +"redhat/INBOX"
+
+source ~/dotfiles/mutt/common
+source ~/dotfiles/mutt/colors/color-xoria
+#source ~/dotfiles/mutt/colors/mutt-colors-solarized/mutt-colors-solarized-light-256.muttrc
+
+set query_command="lbdbq '%s'"
+source ~/dotfiles/mutt/gpg
+
+# if we are in any directory starting with the following, pull
+# specific settings from somewhere else
+folder-hook +redhat/.* "source ~/dotfiles/mutt/redhat"
+
+# Mutt will mark emails from these addresses as having been sent by you
+#alternates username@school.edu username@gmail.com me@other_email.com
+alternates gsutclif@redhat.com greg.sutcliffe@gmail.com
