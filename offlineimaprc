@@ -191,7 +191,7 @@ quick = 10
 # start.
 
 # presynchook = imapfilter
-# postsynchook = notifysync.sh
+postsynchook = notmuch new
 
 # You can also specify parameters to the commands
 # presynchook = imapfilter -c someotherconfig.lua
