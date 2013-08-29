@@ -1,6 +1,9 @@
 # Use this for gitignore becuse tools like rsync use it too
+bin/*
+db/devel*
+discovery*
+public/custom*
+public/discovery*
+.ruby-version
 tags
 tags-ja
-discovery*
-public/discovery*
-public/custom*
