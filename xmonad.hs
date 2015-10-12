@@ -1,3 +1,4 @@
+{-# LANGUAGE FlexibleContexts #-}
 import XMonad
 import qualified XMonad.StackSet as W
 import Data.Ratio ((%))
@@ -19,10 +20,11 @@ import XMonad.Prompt.AppLauncher as AL
 import XMonad.Prompt.Window
 import XMonad.Util.EZConfig
 import XMonad.Util.Run(spawnPipe)
+import Text.Regex.Posix ((=~))
 
 myWorkspaces = map show [1..22]
 myMod        = mod4Mask
-myTerminal   = "Terminal"
+myTerminal   = "lxterminal"
 
 -- one line down    xmproc <- spawnPipe "/usr/bin/xmobar /home/greg/.xmobarrc"
 main = xmonad =<< statusBar myBar myPP toggleStrutsKey myConfig
@@ -52,6 +54,8 @@ myLayoutHook = avoidStruts $ smartBorders ( tiled
     -- Percent of screen to increment by when resizing panes
     delta   = 3/100
 
+-- Regex operator
+q ~? x = fmap (=~ x) q
 -- Manage hook
 myManageHook :: ManageHook
 myManageHook = manageDocks <+> (composeAll . concat $
@@ -62,7 +66,7 @@ myManageHook = manageDocks <+> (composeAll . concat $
 --    , [className    =? c     --> doShift (myWorkspaces !! 5)   |   c   <- myMusicS ]
 --    , [className    =? c     --> doFloat                       |   c   <- myFloatFC]
 --    , [className    =? c     --> doCenterFloat                 |   c   <- myFloatCC]
-    , [name         =? n     --> doSideFloat NW                |   n   <- myFloatSN]
+    , [name         ~? n     --> doSideFloat NW                |   n   <- myFloatSN]
     , [name         =? n     --> doF W.focusDown               |   n   <- myFocusDC]
     , [role =? "pop-up" --> doSideFloat CE ]
     , [composeOne   [ isFullscreen -?> doFullFloat ]]
@@ -75,10 +79,11 @@ myManageHook = manageDocks <+> (composeAll . concat $
 --        myGfxS    = ["gimp-2.6", "Gimp-2.6", "Gimp", "gimp", "GIMP"]
 --        myChatS   = ["Pidgin", "Xchat"]
 --        myMusicS  = ["Clementine"]
---        myFloatFC = ["Steam"]
+--        myFloatFC = ["crx_eggkanocgddhmamlbiijnphhppkpkmkl"]
 --        myFloatCC = ["File-roller", "zsnes", "Gcalctool"]
-        myFloatSN = ["Event Tester"]
+        myFloatSN = ["Event*","Elluminate*"]
         myFocusDC = ["xfce4-notifyd"]
+
 
 -- Main configuration, override the defaults to your liking.
 myConfig = desktopConfig
@@ -127,26 +132,25 @@ myConfig = desktopConfig
         ]
         `additionalKeysP` myKeysP
 
-myKeysP =   [ ("C-M-n", AL.launchApp defaultXPConfig "/home/greg/bin/trello-wrapper.sh " )
+-- myKeysP =   [ ("C-M-n", AL.launchApp defaultXPConfig "/home/greg/bin/tracks_cli_client.rb -p4 -c2 " )
+myKeysP =   [ ("C-M-n", AL.launchApp defaultXPConfig "/home/greg/bin/mail-todo " )
             , ("S-M-g", windowPromptGoto defaultXPConfig { autoComplete = Just 500000 } )
             , ("S-M-b", windowPromptBring defaultXPConfig )
             , ("M-p", spawn "dmenu_run -b")
-            , ("C-M-t", spawn "transset-df -p")        -- transparency for the window under the cursor
             -- Work Keyboard
             , ("<XF86Calculator>", spawn "xlock -mode matrix") -- Work keyboard
             , ("<XF86Explorer>", spawn "thunar")
             , ("<XF86Tools>", spawn "setxkbmap gb")
             -- Laptop
             , ("M-<KP_Enter>", spawn "xscreensaver-command -lock") -- Laptop
-            , ("<XF86AudioLowerVolume>", spawn "amixer -q sset Master 5%-")
-            , ("<XF86AudioRaiseVolume>", spawn "amixer -q sset Master 5%+")
-            , ("<XF86AudioMute>", spawn "amixer -q sset Master toggle")
+            , ("<XF86AudioLowerVolume>", spawn "pamixer --sink 1 -d 5")
+            , ("<XF86AudioRaiseVolume>", spawn "pamixer --sink 1 -i 5")
+            , ("<XF86AudioMute>", spawn "pamixer --sink 1 -t")
             , ("<XF86AudioPlay>", spawn "mpc toggle")
             , ("<XF86AudioPrev>", spawn "mpc prev")
             , ("<XF86AudioNext>", spawn "mpc next")
             ]
             ++
-            -- Workspaces
             [ (mask ++ "M-" ++ [key], screenWorkspace scr >>= flip whenJust (windows . action))
                  | (key, scr)  <- zip "wer" [1,0,2] -- was [0..] *** change to match your screen order ***
                  , (action, mask) <- [ (W.view, "") , (W.shift, "S-")]
