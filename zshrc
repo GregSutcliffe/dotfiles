@@ -46,4 +46,4 @@ eval "$(rbenv init -)"
 export TERM=xterm-256color
 
 # Set transparency
-[ -n "$TERM" ] && transset-df -a >/dev/null
+# [ -n "$TERM" ] && transset-df -a >/dev/null
